@@ -2,7 +2,7 @@
 Name=Network (Budgie Desktop)
 Comment=Manage your network connections
 Icon=nm-device-wireless
-Exec=dbus-launch nm-applet
+Exec=nm-applet
 TryExec=nm-applet
 Terminal=false
 Type=Application
