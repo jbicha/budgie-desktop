@@ -1,0 +1,3 @@
+nm-applet.diff
+0001-raven-Restore-lightdm-only-screen-locking.patch
+0002-panel-Add-missing-hints-as-per-issue-347.patch

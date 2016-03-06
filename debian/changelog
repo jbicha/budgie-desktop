@@ -1,0 +1,70 @@
+budgie-desktop (10.2.4-1ubuntu3) xenial; urgency=medium
+
+  * patch budgie nm-applet desktop file to show nm-applet
+
+ -- fossfreedom <foss.freedom@gmail.com>  Fri, 04 Mar 2016 19:29:50 +0000
+
+budgie-desktop (10.2.4-1ubuntu2) xenial; urgency=medium
+
+  * cleanup metapackage to remove unnecessary packages
+
+ -- fossfreedom <foss.freedom@gmail.com>  Wed, 02 Mar 2016 20:52:04 +0000
+
+budgie-desktop (10.2.4-1ubuntu1) xenial; urgency=medium
+
+  * commit for lightdm locking
+  * commit for missing hints
+
+ -- fossfreedom <foss.freedom@gmail.com>  Wed, 02 Mar 2016 20:05:35 +0000
+
+budgie-desktop (10.2.4-1) xenial; urgency=medium
+
+  * new upstream release
+  - fix for network manage applet and other icon changes
+
+ -- fossfreedom <foss.freedom@gmail.com>  Sun, 28 Feb 2016 07:41:38 +0000
+
+budgie-desktop (10.2.3-1ubuntu6) xenial; urgency=medium
+
+  * rebuild
+
+ -- fossfreedom <foss.freedom@gmail.com>  Thu, 18 Feb 2016 23:29:17 +0000
+
+budgie-desktop (10.2.3-1ubuntu5) xenial; urgency=medium
+
+  * downgrade gir1.2-gee to v0.8 since 1.0 seems to have been removed
+
+ -- fossfreedom <foss.freedom@gmail.com>  Thu, 18 Feb 2016 21:46:37 +0000
+
+budgie-desktop (10.2.3-1ubuntu4) xenial; urgency=medium
+
+  * incl. 32bit build
+
+ -- fossfreedom <foss.freedom@gmail.com>  Thu, 18 Feb 2016 21:22:10 +0000
+
+budgie-desktop (10.2.3-1ubuntu3) xenial; urgency=medium
+
+  * rebuild with revised packaging
+  - dbg symbols
+  - split libraries
+  - stripped packages making much smaller
+
+ -- fossfreedom <foss.freedom@gmail.com>  Tue, 16 Feb 2016 20:09:37 +0000
+
+budgie-desktop (10.2.3-1ubuntu2) xenial; urgency=medium
+
+  * add recommendation for moka and arc-theme
+
+ -- fossfreedom <foss.freedom@gmail.com>  Sun, 14 Feb 2016 22:08:44 +0000
+
+budgie-desktop (10.2.3-1ubuntu1) xenial; urgency=medium
+
+  * amd64 build only
+
+ -- fossfreedom <foss.freedom@gmail.com>  Sun, 14 Feb 2016 21:25:21 +0000
+
+budgie-desktop (10.2.3-1) xenial; urgency=medium
+
+  * Initial release (Closes: #0000)
+
+ -- fossfreedom <foss.freedom@gmail.com>  Fri, 12 Feb 2016 22:49:43 +0000

@@ -1,0 +1,32 @@
+From 0758ffd7aaf53f54b5b74462753a6f2a70182ccb Mon Sep 17 00:00:00 2001
+From: Ikey Doherty <ikey@solus-project.com>
+Date: Tue, 1 Mar 2016 10:10:05 +0000
+Subject: [PATCH] panel: Add missing hints as per issue #347
+
+Whilst budgie may be able to know what to do with dock-type windows, not
+all applications do. As such we should respect that by ensuring we let
+all interested applications know we do not want to be listed in the
+tasklist(s) or pager(s)
+
+Signed-off-by: Ikey Doherty <ikey@solus-project.com>
+---
+ panel/panel.vala | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/panel/panel.vala b/panel/panel.vala
+index e8a2644..b1a6a0a 100644
+--- a/panel/panel.vala
++++ b/panel/panel.vala
+@@ -187,6 +187,9 @@ public class Panel : Budgie.Toplevel
+ 
+         intended_size = settings.get_int(Budgie.PANEL_KEY_SIZE);
+         this.manager = manager;
++
++        skip_taskbar_hint = true;
++        skip_pager_hint = true;
+     
+         scale = get_scale_factor();
+ 
+-- 
+2.7.0
+

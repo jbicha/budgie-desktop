@@ -1,0 +1,167 @@
+Source: budgie-desktop
+Section: gnome
+Priority: optional
+Maintainer: fossfreedom <foss.freedom@gmail.com>
+Homepage: https://github.com/solus-project/budgie-desktop
+Build-Depends: debhelper (>=9), 
+ dh-buildinfo,
+ dh-autoreconf,
+ gtk-doc-tools, 
+ gir1.2-gee-0.8, 
+ gnome-common, 
+ gobject-introspection, 
+ intltool, 
+ libgee-0.8-dev, 
+ libglib2.0-dev, 
+ libgtk-3-dev, 
+ libpulse-dev, 
+ libpulse-mainloop-glib0, 
+ libmutter-dev (>=3.16), 
+ libgnome-desktop-3-dev, 
+ libgnome-menu-3-dev, 
+ libpeas-dev, libgee-0.8-dev, 
+ libgnome-desktop-3-dev, 
+ libpolkit-agent-1-dev, 
+ libpolkit-gobject-1-dev, 
+ libupower-glib-dev, 
+ libwnck-3-dev, 
+ pkg-config, 
+ python-enum34, 
+ python2.7, 
+ uuid-dev, 
+ valac
+Standards-Version: 3.9.6
+Vcs-Browser: https://github.com/solus-project/budgie-desktop.git
+
+Package: budgie-desktop
+Architecture: any
+Depends: ${misc:Depends},
+ budgie-core, 
+ gir1.2-budgie-desktop-1.0
+Recommends: moka-icon-theme,
+ arc-theme,
+ gnome-control-center
+Description: Budgie-Remix Metapackage
+ Budgie is the flagship desktop of the Solus Linux Distribution,
+ a Solus project. Designed with the modern user in mind, it focuses on 
+ simplicity and elegance. A huge advantage for the Budgie desktop is 
+ that it is not a fork of another project, but rather one written from 
+ scratch with integration in mind.
+ 
+Package: budgie-core
+Architecture: any
+Suggests: budgie-core-dbg
+Depends: ${shlibs:Depends},
+ ${misc:Depends},
+ gnome-session-bin, 
+ gnome-session-common, 
+ gnome-settings-daemon, 
+ gnome-control-center, 
+ gnome-menus, 
+ libgee-0.8-2, 
+ libglib2.0-0, 
+ libgtk-3-0, 
+ libpeas-1.0-0, 
+ libpulse0, 
+ libpulse-mainloop-glib0, 
+ libupower-glib3, 
+ libgnome-menu-3-0, 
+ libwnck-3-0, 
+ libmutter0g, 
+ nautilus, 
+ libpolkit-agent-1-0, 
+ libpolkit-gobject-1-0, 
+ upower,
+ libbudgie-plugin0,
+ libbudgietheme0,
+ libraven0
+Description: Core package for budgie-desktop
+ Budgie is the flagship desktop of the Solus Linux Distribution,
+ a Solus project. Designed with the modern user in mind, it focuses on 
+ simplicity and elegance. A huge advantage for the Budgie desktop is 
+ that it is not a fork of another project, but rather one written from 
+ scratch with integration in mind.
+ 
+Package: budgie-core-dbg
+Section: debug
+Priority: extra
+Architecture: any
+Depends: budgie-core (= ${binary:Version}), ${misc:Depends}
+Description: Debug package for budgie-core
+ Budgie is a panel-based desktop using Gnome-Shell components.
+
+Package: libbudgie-plugin0
+Section: libs
+Architecture: any
+Suggests: libbudgie-plugin0-dbg
+Depends: ${misc:Depends},
+         ${shlibs:Depends}
+Description: plugin library for budgie-desktop
+ Budgie is a panel-based desktop using Gnome-Shell components.
+ 
+Package: libbudgie-plugin0-dbg
+Section: debug
+Priority: extra
+Architecture: any
+Depends: libbudgie-plugin0 (= ${binary:Version}), ${misc:Depends}
+Description: Debug plugin library package for budgie-desktop
+ Budgie is a panel-based desktop using Gnome-Shell components.
+ 
+Package: libbudgietheme0
+Section: libs
+Architecture: any
+Suggests: libbudgie-plugin0-dbg
+Depends: ${misc:Depends},
+         ${shlibs:Depends}
+Description: theme library for budgie-desktop
+ Budgie is a panel-based desktop using Gnome-Shell components.
+
+Package: libbudgietheme0-dbg
+Section: debug
+Priority: extra
+Architecture: any
+Depends: libbudgietheme0 (= ${binary:Version}), ${misc:Depends}
+Description: Debug theme library package for budgie-desktop
+ Budgie is a panel-based desktop using Gnome-Shell components.
+  
+Package: libraven0
+Section: libs
+Architecture: any
+Suggests: libraven0-dbg
+Depends: ${misc:Depends},
+         ${shlibs:Depends}
+Description: raven library for budgie-desktop
+ Budgie is a panel-based desktop using Gnome-Shell components.
+ 
+Package: libraven0-dbg
+Section: debug
+Priority: extra
+Architecture: any
+Depends: libraven0 (= ${binary:Version}), ${misc:Depends}
+Description: Debug raven library package for budgie-desktop
+ Budgie is a panel-based desktop using Gnome-Shell components.
+
+Package: budgie-core-dev
+Section: libdevel
+Architecture: any
+Depends: ${misc:Depends},
+         gir1.2-budgie-desktop-1.0 (= ${binary:Version}),
+         libglib2.0-dev,
+         libgtk-3-dev
+Description: development package for budgie-desktop
+ Budgie is a panel-based desktop using Gnome-Shell components.
+  
+Package: gir1.2-budgie-desktop-1.0
+Section: introspection
+Architecture: any
+Depends: ${misc:Depends}
+Description: Budgie Desktop is the flagship desktop of Solus OS.
+ Budgie is a panel-based desktop using Gnome-Shell components.
+
+#Package: budgie-desktop-doc
+#Section: doc
+#Architecture: all
+#Depends: ${misc:Depends}
+#Suggests: devhelp
+#Description: documentation files for the budgie-desktop
+# This package contains the API documentation.
