@@ -1,3 +1,9 @@
+budgie-desktop (10.2.4-1ubuntu6) xenial; urgency=medium
+
+  * this time with the dh method for overrides
+
+ -- fossfreedom <foss.freedom@gmail.com>  Fri, 11 Mar 2016 22:40:48 +0000
+
 budgie-desktop (10.2.4-1ubuntu5) xenial; urgency=medium
 
   * corrected xsettings install
