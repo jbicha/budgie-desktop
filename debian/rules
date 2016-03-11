@@ -29,6 +29,7 @@ binary binary-arch:
 	find debian/tmp -name \*.a -exec rm {} \;
 	find debian/tmp -name \*.so* -exec chmod 644 {} \;
 	dh_install
+	dh_installgsettings --priority=20
 	dh_strip -p budgie-core --dbg-package=budgie-core-dbg
 	dh_strip -p libbudgie-plugin0 --dbg-package=libbudgie-plugin0-dbg
 	dh_strip -p libbudgietheme0 --dbg-package=libbudgietheme0-dbg
