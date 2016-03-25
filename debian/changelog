@@ -1,3 +1,9 @@
+budgie-desktop (10.2.4-1ubuntu7) xenial; urgency=medium
+
+  * add discoverable pinned apps to the panel
+
+ -- fossfreedom <foss.freedom@gmail.com>  Fri, 25 Mar 2016 12:51:24 +0000
+
 budgie-desktop (10.2.4-1ubuntu6) xenial; urgency=medium
 
   * this time with the dh method for overrides
