@@ -1,50 +1,20 @@
-budgie-desktop (10.2.4-1ubuntu7) xenial; urgency=medium
+budgie-desktop (10.2.4-2) xenial; urgency=medium
 
+  * combine previous patch sets
+  * hide ibus in system tray - it doesnt work in gnome
   * add discoverable pinned apps to the panel
-
- -- fossfreedom <foss.freedom@gmail.com>  Fri, 25 Mar 2016 12:51:24 +0000
-
-budgie-desktop (10.2.4-1ubuntu6) xenial; urgency=medium
-
-  * this time with the dh method for overrides
-
- -- fossfreedom <foss.freedom@gmail.com>  Fri, 11 Mar 2016 22:40:48 +0000
-
-budgie-desktop (10.2.4-1ubuntu5) xenial; urgency=medium
-
-  * corrected xsettings install
-
- -- fossfreedom <foss.freedom@gmail.com>  Thu, 10 Mar 2016 20:05:28 +0000
-
-budgie-desktop (10.2.4-1ubuntu4) xenial; urgency=medium
-
+  * dh method for overrides
   * add appmenu xsettings
-
- -- fossfreedom <foss.freedom@gmail.com>  Thu, 10 Mar 2016 19:38:15 +0000
-
-budgie-desktop (10.2.4-1ubuntu3) xenial; urgency=medium
-
   * patch budgie nm-applet desktop file to show nm-applet
-
- -- fossfreedom <foss.freedom@gmail.com>  Fri, 04 Mar 2016 19:29:50 +0000
-
-budgie-desktop (10.2.4-1ubuntu2) xenial; urgency=medium
-
   * cleanup metapackage to remove unnecessary packages
-
- -- fossfreedom <foss.freedom@gmail.com>  Wed, 02 Mar 2016 20:52:04 +0000
-
-budgie-desktop (10.2.4-1ubuntu1) xenial; urgency=medium
-
   * commit for lightdm locking
   * commit for missing hints
 
- -- fossfreedom <foss.freedom@gmail.com>  Wed, 02 Mar 2016 20:05:35 +0000
+ -- fossfreedom <foss.freedom@gmail.com>  Sat, 26 Mar 2016 20:05:35 +0000
 
 budgie-desktop (10.2.4-1) xenial; urgency=medium
 
   * new upstream release
-  - fix for network manage applet and other icon changes
 
  -- fossfreedom <foss.freedom@gmail.com>  Sun, 28 Feb 2016 07:41:38 +0000
 

@@ -4,4 +4,7 @@ antialiasing='rgba'
 overrides={'Gtk/ShellShowsAppMenu': <0>, 'Gtk/DecorationLayout': <'menu:minimize,maximize,close'>}
 
 [com.solus-project.icon-tasklist]
-pinned-launchers=['firefox.desktop', 'nautilus.desktop', 'libreoffice-writer.desktop', 'gnome-software-local-file.desktop']
+pinned-launchers=['firefox.desktop', 'nautilus.desktop', 'libreoffice-writer.desktop', 'org.gnome.Software.desktop']
+
+[org.freedesktop.ibus.panel]
+show-icon-on-systray=false
