@@ -56,6 +56,37 @@ public class IconTasklist : Budgie.Plugin, Peas.ExtensionBase
     }
 }
 
+public class ButtonWrapper : Gtk.Revealer
+{
+    unowned IconButton? button;
+
+    public ButtonWrapper(IconButton? button)
+    {
+        this.button = button;
+
+        this.set_transition_type(Gtk.RevealerTransitionType.SLIDE_RIGHT);
+
+        this.add(button);
+        this.set_reveal_child(false);
+        this.show_all();
+    }
+
+    public void gracefully_die()
+    {
+        if (!get_settings().gtk_enable_animations) {
+            this.destroy();
+            return;
+        }
+
+        this.set_transition_type(Gtk.RevealerTransitionType.SLIDE_LEFT);
+        this.notify["child-revealed"].connect_after(()=> {
+            this.destroy();
+        });
+        this.set_reveal_child(false);
+    }
+}
+
+
 
 
 [GtkTemplate (ui = "/com/solus-project/icon-tasklist/settings.ui")]
@@ -84,6 +115,14 @@ public class DesktopHelper : Object
 
     HashTable<string?,string?> simpletons;
     HashTable<string?,string?> startupids;
+    static string[] derpers;
+
+    static construct {
+        derpers = new string[] {
+            "google-chrome",
+            "hexchat"
+        };
+    }
 
     public DesktopHelper()
     {
@@ -156,6 +195,14 @@ public class DesktopHelper : Object
             }
         }
         return p1;
+    }
+
+    public static bool has_derpy_icon(Wnck.Window? window)
+    {
+        if (window.get_class_instance_name() in DesktopHelper.derpers) {
+            return true;
+        }
+        return false;
     }
 
     public static void set_pinned(Settings? settings, DesktopAppInfo app_info, bool pinned)
@@ -426,14 +473,23 @@ public class IconButton : Gtk.ToggleButton
             return;
         }
 
-        if (window.get_icon_is_fallback()) {
-            if (ainfo != null && ainfo.get_icon() != null) {
-                image.set_from_gicon(ainfo.get_icon(), Gtk.IconSize.INVALID);
+        unowned GLib.Icon? aicon = null;
+        if (ainfo != null) {
+            aicon = ainfo.get_icon();
+        }
+
+        if (DesktopHelper.has_derpy_icon(window) && aicon != null) {
+            image.set_from_gicon(aicon, Gtk.IconSize.INVALID);
+        } else {
+            if (window.get_icon_is_fallback()) {
+                if (ainfo != null && ainfo.get_icon() != null) {
+                    image.set_from_gicon(ainfo.get_icon(), Gtk.IconSize.INVALID);
+                } else {
+                    image.set_from_pixbuf(window.get_icon());
+                }
             } else {
                 image.set_from_pixbuf(window.get_icon());
             }
-        } else {
-            image.set_from_pixbuf(window.get_icon());
         }
         image.pixel_size = icon_size;
     }
@@ -647,11 +703,13 @@ public class IconTasklistApplet : Budgie.Applet
         // Fallback to new button.
         if (button == null) {
             var btn = new IconButton(settings, window, icon_size, pinfo);
+            var button_wrap = new ButtonWrapper(btn);
+
             button = btn;
-            widget.pack_start(btn, false, false, 0);
+            widget.pack_start(button_wrap, false, false, 0);
         }
         buttons[window] = button;
-        button.show_all();
+        (button.get_parent() as Gtk.Revealer).set_reveal_child(true);
     }
 
     protected void window_closed(Wnck.Window window)
@@ -666,7 +724,7 @@ public class IconTasklistApplet : Budgie.Applet
             var pbtn = btn as PinnedIconButton;
             pbtn.reset();
         } else {
-            btn.destroy();
+            (btn.get_parent() as ButtonWrapper).gracefully_die();
         }
         buttons.remove(window);
     }
@@ -814,8 +872,9 @@ public class IconTasklistApplet : Budgie.Applet
                 continue;
             }
             var button = new PinnedIconButton(settings, info, icon_size, ref this.context);
+            var button_wrap = new ButtonWrapper(button);
             pin_buttons[desktopfile] = button;
-            pinned.pack_start(button, false, false, 0);
+            pinned.pack_start(button_wrap, false, false, 0);
 
             // Do we already have an icon button for this?
             var iter = HashTableIter<Wnck.Window,IconButton>(buttons);
@@ -829,7 +888,7 @@ public class IconTasklistApplet : Budgie.Applet
                     // Pinning an already active button.
                     button.window = btn.window;
                     // destroy old one
-                    btn.destroy();
+                    (btn.get_parent() as ButtonWrapper).gracefully_die();
                     buttons.remove(keyn);
                     buttons[keyn] = button;
                     button.update_from_window();
@@ -837,7 +896,7 @@ public class IconTasklistApplet : Budgie.Applet
                 }
             }
 
-            button.show_all();
+            (button.get_parent() as Gtk.Revealer).set_reveal_child(true);
         }
         string[] removals = {};
         /* Conversely, remove ones which have been unset. */
@@ -850,14 +909,16 @@ public class IconTasklistApplet : Budgie.Applet
             }
             /* We have a removal. */
             if (btn.window == null) {
-                btn.destroy();
+                (btn.get_parent() as ButtonWrapper).gracefully_die();
             } else {
                 /* We need to move this fella.. */
                 IconButton b2 = new IconButton(settings, btn.window, icon_size, (owned)btn.app_info);
-                btn.destroy();
-                widget.pack_start(b2, false, false, 0);
+                var button_wrap = new ButtonWrapper(b2);
+
+                (btn.get_parent() as ButtonWrapper).gracefully_die();
+                widget.pack_start(button_wrap, false, false, 0);
                 buttons[b2.window]  = b2;
-                b2.show_all();
+                button_wrap.set_reveal_child(true);
             }
             removals += key_name;
         }

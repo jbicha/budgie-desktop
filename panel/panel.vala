@@ -26,6 +26,7 @@ public class MainPanel : Gtk.Box
         Object(orientation: Gtk.Orientation.HORIZONTAL);
         this.intended_size = size;
         get_style_context().add_class("budgie-panel");
+        get_style_context().add_class(Gtk.STYLE_CLASS_BACKGROUND);
     }
 
     public override void get_preferred_height(out int m, out int n)
@@ -67,6 +68,8 @@ public class Panel : Budgie.Toplevel
 
     HashTable<string,Budgie.AppletInfo?> initial_config = null;
 
+    List<string?> expected_uuids;
+
     construct {
         position = PanelPosition.NONE;
     }
@@ -87,6 +90,24 @@ public class Panel : Budgie.Toplevel
 
     int current_icon_size;
     int current_small_icon_size;
+
+    /* Track initial load */
+    private bool is_fully_loaded = false;
+
+    public signal void panel_loaded();
+
+    /* Animation tracking */
+    private double render_scale = 0.0;
+    private bool initial_anim = false;
+    public double nscale {
+        public set {
+            render_scale = value;
+            queue_draw();
+        }
+        public get {
+            return render_scale;
+        }
+    }
 
     public bool activate_action(int remote_action)
     {
@@ -179,6 +200,59 @@ public class Panel : Budgie.Toplevel
         return ret;
     }
 
+    /* Handle being "fully" loaded */
+    private void on_fully_loaded()
+    {
+        unowned string? uuid = null;
+        unowned Budgie.AppletInfo? info = null;
+
+        if (applets.size() < 1) {
+            if (!initial_anim) {
+                Idle.add(initial_animation);
+            }
+            return;
+        }
+
+        /* All applets loaded and positioned, now re-sort them */
+        var iter = HashTableIter<string?,Budgie.AppletInfo?>(applets);
+        while (iter.next(out uuid, out info)) {
+            applet_reparent(info);
+            applet_reposition(info);
+        }
+
+        /* Let everyone else know we're in business */
+        applets_changed();
+        if (!initial_anim) {
+            Idle.add(initial_animation);
+        }
+    }
+
+    private bool initial_animation()
+    {
+        this.initial_anim = true;
+
+        var anim = new Budgie.Animation();
+        anim.widget = this;
+        anim.length = 512 * Budgie.MSECOND;
+        anim.tween = Budgie.sine_ease_out;
+        anim.changes = new Budgie.PropChange[] {
+            Budgie.PropChange() {
+                property = "nscale",
+                old = 1.0,
+                @new = 0.0
+            }
+        };
+
+        anim.start((a)=> {
+            if ((a.widget as Budgie.Panel).nscale == 1.0) {
+                a.widget.hide();
+            } else {
+                (a.widget as Gtk.Window).show();
+            }
+        });
+        return false;
+    }
+
     public Panel(Budgie.PanelManager? manager, string? uuid, Settings? settings)
     {
         Object(type_hint: Gdk.WindowTypeHint.DOCK, window_position: Gtk.WindowPosition.NONE, settings: settings, uuid: uuid);
@@ -190,13 +264,17 @@ public class Panel : Budgie.Toplevel
 
         skip_taskbar_hint = true;
         skip_pager_hint = true;
+        set_decorated(false);
     
         scale = get_scale_factor();
+        nscale = 1.0;
 
         popover_manager = new PopoverManagerImpl(this);
         pending = new HashTable<string,HashTable<string,string>>(str_hash, str_equal);
         creating = new HashTable<string,HashTable<string,string>>(str_hash, str_equal);
         applets = new HashTable<string,Budgie.AppletInfo?>(str_hash, str_equal);
+        expected_uuids = new List<string?>();
+        panel_loaded.connect(on_fully_loaded);
 
         var vis = screen.get_rgba_visual();
         if (vis == null) {
@@ -236,17 +314,19 @@ public class Panel : Budgie.Toplevel
 
         /* Assign our applet holder boxes */
         start_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
-        start_box.get_style_context().add_class("start-region");
         start_box.halign = Gtk.Align.START;
         layout.pack_start(start_box, true, true, 0);
         center_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
-        center_box.get_style_context().add_class("center-region");
         layout.set_center_widget(center_box);
         end_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 2);
         end_box.margin = 2;
-        end_box.get_style_context().add_class("end-region");
         layout.pack_end(end_box, true, true, 0);
         end_box.halign = Gtk.Align.END;
+
+        this.theme_regions = this.settings.get_boolean(Budgie.PANEL_KEY_REGIONS);
+        this.notify["theme-regions"].connect(update_theme_regions);
+        this.settings.bind(Budgie.PANEL_KEY_REGIONS, this, "theme-regions", SettingsBindFlags.DEFAULT);
+        this.update_theme_regions();
 
         get_child().show_all();
         set_expanded(false);
@@ -256,6 +336,20 @@ public class Panel : Budgie.Toplevel
         /* bit of a no-op. */
         update_sizes();
         load_applets();
+    }
+
+    void update_theme_regions()
+    {
+        if (this.theme_regions) {
+            start_box.get_style_context().add_class("start-region");
+            center_box.get_style_context().add_class("center-region");
+            end_box.get_style_context().add_class("end-region");
+        } else {
+            start_box.get_style_context().remove_class("start-region");
+            center_box.get_style_context().remove_class("center-region");
+            end_box.get_style_context().remove_class("end-region");
+        }
+        this.queue_draw();
     }
 
     void update_sizes()
@@ -346,7 +440,14 @@ public class Panel : Budgie.Toplevel
     {
         string[]? applets = settings.get_strv(Budgie.PANEL_KEY_APPLETS);
         if (applets == null || applets.length == 0) {
+            this.panel_loaded();
+            this.is_fully_loaded = true;
             return;
+        }
+
+        /* Two loops so we can track when we've fully loaded the panel */
+        for (int i = 0; i < applets.length; i++) {
+            this.expected_uuids.append(applets[i]);
         }
 
         for (int i = 0; i < applets.length; i++) {
@@ -356,16 +457,21 @@ public class Panel : Budgie.Toplevel
             if (info == null) {
                 /* Faiiiil */
                 if (name == null) {
+                    unowned List<string?> g = expected_uuids.find_custom(applets[i], GLib.strcmp);
+                    /* TODO: No longer expecting this guy to load */
+                    if (g != null) {
+                        expected_uuids.remove_link(g);
+                    }
                     message("Unable to load invalid applet: %s", applets[i]);
-                    /* TODO: Trimmage */
                     continue;
                 }
                 this.add_pending(applets[i], name);
                 manager.modprobe(name);
-                continue;
+            } else {
+                /* um add this bro to the panel :o */
+                this.add_applet(info);
             }
-            /* um add this bro to the panel :o */
-            this.add_applet(info);
+
         }
     }
 
@@ -535,6 +641,17 @@ public class Panel : Budgie.Toplevel
             initial_config.remove(info.uuid);
         }
 
+        if (!this.is_fully_loaded) {
+            unowned List<string?> exp_fin = expected_uuids.find_custom(info.uuid, GLib.strcmp);
+            if (exp_fin != null) {
+                expected_uuids.remove_link(exp_fin);
+            }
+            if (expected_uuids.length() == 0) {
+                this.is_fully_loaded = true;
+                this.panel_loaded();
+            }
+        }
+
         /* figure out the alignment */
         switch (info.alignment) {
             case "start":
@@ -561,33 +678,47 @@ public class Panel : Budgie.Toplevel
         this.applet_added(info);
     }
 
+    void applet_reparent(Budgie.AppletInfo? info)
+    {
+        /* Handle being reparented. */
+        unowned Gtk.Box? new_parent = null;
+        switch (info.alignment) {
+            case "start":
+                new_parent = this.start_box;
+                break;
+            case "end":
+                new_parent = this.end_box;
+                break;
+            default:
+                new_parent = this.center_box;
+                break;
+        }
+        /* Don't needlessly reparent */
+        if (new_parent == info.applet.get_parent()) {
+            return;
+        }
+        info.applet.reparent(new_parent);
+    }
+
+    void applet_reposition(Budgie.AppletInfo? info)
+    {
+        info.applet.get_parent().child_set(info.applet, "position", info.position);
+    }
+
     void applet_updated(Object o, ParamSpec p)
     {
         unowned AppletInfo? info = o as AppletInfo;
 
-        if (p.name == "alignment") {
-            /* Handle being reparented. */
-            unowned Gtk.Box? new_parent = null;
-            switch (info.alignment) {
-                case "start":
-                    new_parent = this.start_box;
-                    break;
-                case "end":
-                    new_parent = this.end_box;
-                    break;
-                default:
-                    new_parent = this.center_box;
-                    break;
-            }
-            /* Don't needlessly reparent */
-            if (new_parent == info.applet.get_parent()) {
-                return;
-            }
-            info.applet.reparent(new_parent);
+        /* Prevent a massive amount of resorting */
+        if (!this.is_fully_loaded) {
             return;
+        }
+
+        if (p.name == "alignment") {
+            applet_reparent(info);
         } else if (p.name == "position") {
-            info.applet.get_parent().child_set(info.applet, "position", info.position);
-        } /* TODO: Implement position knowledge */
+            applet_reposition(info);
+        }
         this.applets_changed();
     }
 
@@ -926,6 +1057,34 @@ public class Panel : Budgie.Toplevel
             info.position = 0;
             applets_changed();
         }
+    }
+
+    public override bool draw(Cairo.Context cr)
+    {
+        if (render_scale == 0.0) {
+            return base.draw(cr);
+        } else if (render_scale == 1.0) {
+            return Gdk.EVENT_STOP;
+        }
+
+        Gtk.Allocation alloc;
+        get_allocation(out alloc);
+        var buffer = new Cairo.ImageSurface(Cairo.Format.ARGB32, alloc.width, alloc.height);
+        var cr2 = new Cairo.Context(buffer);
+
+        propagate_draw(get_child(), cr2);
+        var d = (double) intended_size;
+        var y = d * render_scale;
+
+        /* Offset the buffer according to y-screen-edge */
+        if (position == PanelPosition.TOP) {
+            cr.set_source_surface(buffer, 0, -y);
+        } else {
+            cr.set_source_surface(buffer, 0, y);
+        }
+        cr.paint();
+
+        return Gdk.EVENT_STOP;
     }
 }
 

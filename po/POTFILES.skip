@@ -5,7 +5,7 @@ panel/budgie-panel.desktop.in.in
 panel/budgie-panel.desktop.in
 session/budgie-desktop.desktop.in
 
-aven/ui/notification.ui
+raven/ui/notification.ui
 raven/ui/notification_clone.ui
 
 panel/applets/clock/ClockApplet.c
@@ -13,6 +13,7 @@ panel/applets/budgie-menu/BudgieMenuWindow.c
 panel/applets/lock-keys/LockKeysApplet.c
 panel/applets/notifications/NotificationsApplet.c
 panel/applets/show-desktop/ShowDesktopApplet.c
+panel/applets/status/BluetoothIndicator.c
 
 raven/main_view.c
 raven/notifications_view.c

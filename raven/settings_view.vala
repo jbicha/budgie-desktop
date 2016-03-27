@@ -185,6 +185,10 @@ public class PanelEditor : Gtk.Box
     private Gtk.Switch? switch_shadow;
     private ulong shadow_id;
 
+    [GtkChild]
+    private Gtk.Switch? switch_regions;
+    private ulong region_id;
+
     HashTable<string?,Budgie.Toplevel?> panels;
     unowned Budgie.Toplevel? current_panel = null;
     private ulong notify_id;
@@ -272,6 +276,7 @@ public class PanelEditor : Gtk.Box
         spinbutton_size.set_numeric(true);
 
         shadow_id = switch_shadow.notify["active"].connect(on_shadow_changed);
+        region_id = switch_regions.notify["active"].connect(on_region_changed);
 
         panels_id = combobox_panels.changed.connect(on_panel_changed);
 
@@ -340,6 +345,11 @@ public class PanelEditor : Gtk.Box
     void on_shadow_changed()
     {
         current_panel.shadow_visible = this.switch_shadow.active;
+    }
+
+    void on_region_changed()
+    {
+        current_panel.theme_regions = this.switch_regions.active;
     }
 
     void on_size_changed()
@@ -455,6 +465,7 @@ public class PanelEditor : Gtk.Box
         SignalHandler.unblock(spinbutton_size, spin_id);
 
         switch_shadow.set_active(panel.shadow_visible);
+        switch_regions.set_active(panel.theme_regions);
 
         update_applets();
         init_applets();
@@ -658,6 +669,10 @@ public class PanelEditor : Gtk.Box
             SignalHandler.block(switch_shadow, shadow_id);
             switch_shadow.set_active(panel.shadow_visible);
             SignalHandler.unblock(switch_shadow, shadow_id);
+        } else if (p.name == "theme-regions") {
+            SignalHandler.block(switch_regions, region_id);
+            switch_regions.set_active(panel.theme_regions);
+            SignalHandler.unblock(switch_regions, region_id);
         }
     }
 
@@ -701,6 +716,50 @@ public class SettingsHeader : Gtk.Box
     }
 }
 
+[GtkTemplate (ui = "/com/solus-project/budgie/raven/fonts.ui")]
+public class FontSettings : Gtk.Box
+{
+
+    [GtkChild]
+    private Gtk.FontButton? fontbutton_title;
+
+    [GtkChild]
+    private Gtk.FontButton? fontbutton_document;
+
+    [GtkChild]
+    private Gtk.FontButton? fontbutton_interface;
+
+    [GtkChild]
+    private Gtk.FontButton? fontbutton_monospace;
+
+    private GLib.Settings ui_settings;
+    private GLib.Settings wm_settings;
+
+    construct {
+        ui_settings = new GLib.Settings("org.gnome.desktop.interface");
+        wm_settings = new GLib.Settings("org.gnome.desktop.wm.preferences");
+
+        ui_settings.bind("document-font-name", fontbutton_document, "font-name", SettingsBindFlags.DEFAULT);
+        ui_settings.bind("font-name", fontbutton_interface, "font-name", SettingsBindFlags.DEFAULT);
+        ui_settings.bind("monospace-font-name", fontbutton_monospace, "font-name", SettingsBindFlags.DEFAULT);
+        wm_settings.bind("titlebar-font", fontbutton_title, "font-name", SettingsBindFlags.DEFAULT);
+    }
+}
+
+[GtkTemplate (ui = "/com/solus-project/budgie/raven/background.ui")]
+public class BackgroundSettings : Gtk.Box
+{
+    [GtkChild]
+    private Gtk.Switch? switch_icons;
+
+    private GLib.Settings background_settings;
+
+    construct {
+        background_settings = new GLib.Settings("org.gnome.desktop.background");
+        background_settings.bind("show-desktop-icons", switch_icons, "active", SettingsBindFlags.DEFAULT);
+    }
+}
+
 [GtkTemplate (ui = "/com/solus-project/budgie/raven/appearance.ui")]
 public class AppearanceSettings : Gtk.Box
 {
@@ -710,6 +769,9 @@ public class AppearanceSettings : Gtk.Box
 
     [GtkChild]
     private Gtk.ComboBox? combobox_icon;
+
+    [GtkChild]
+    private Gtk.ComboBox? combobox_cursor;
 
     [GtkChild]
     private Gtk.Switch? switch_dark;
@@ -727,6 +789,9 @@ public class AppearanceSettings : Gtk.Box
     
         combobox_icon.pack_start(render, true);
         combobox_icon.add_attribute(render, "text", 0);
+
+        combobox_cursor.pack_start(render, true);
+        combobox_cursor.add_attribute(render, "text", 0);
 
         ui_settings = new GLib.Settings("org.gnome.desktop.interface");
         budgie_settings = new GLib.Settings("com.solus-project.budgie-panel");
@@ -750,6 +815,14 @@ public class AppearanceSettings : Gtk.Box
             queue_resize();
             if (b) {
                 ui_settings.bind("icon-theme", combobox_icon, "active-id", SettingsBindFlags.DEFAULT);
+            }
+        });
+        load_themes_by_type.begin(ThemeType.CURSOR_THEME, (obj,res)=> {
+            bool b = load_themes_by_type.end(res);
+            combobox_cursor.sensitive = b;
+            queue_resize();
+            if (b) {
+                ui_settings.bind("cursor-theme", combobox_cursor, "active-id", SettingsBindFlags.DEFAULT);
             }
         });
     }
@@ -784,6 +857,7 @@ public class AppearanceSettings : Gtk.Box
             case ThemeType.CURSOR_THEME:
                 item = "icons";
                 suffix = "cursors";
+                target = this.combobox_cursor;
                 break;
             default:
                 return false;
@@ -873,8 +947,17 @@ public class SettingsView : Gtk.Box
         pack_start(stack, true, true, 0);
 
         stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
+        var appearance_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
         var appearance = new AppearanceSettings();
-        stack.add_titled(appearance, "appearance", _("General"));
+        appearance_box.pack_start(appearance, false, false, 0);
+        /* This option currently only affects Nautilus. */
+        if (Environment.find_program_in_path("nautilus") != null) {
+            var background_settings = new BackgroundSettings();
+            appearance_box.pack_start(background_settings, false, false, 0);
+        }
+        var fonts = new FontSettings();
+        appearance_box.pack_start(fonts, false, false, 0);
+        stack.add_titled(appearance_box, "appearance", _("General"));
 
 
         panel_stack = new Gtk.Stack();

@@ -335,7 +335,10 @@ public class SoundWidget : Gtk.Box
         }
         var device = this.mixer.lookup_output_id(id);
 
-        var check = new Gtk.RadioButton.with_label_from_widget(this.output_leader, device.description);
+        var card = device.card as Gvc.MixerCard;
+        var check = new Gtk.RadioButton.with_label_from_widget(this.output_leader, "%s - %s".printf(device.description, card.name));
+        (check.get_child() as Gtk.Label).set_ellipsize(Pango.EllipsizeMode.END);
+        (check.get_child() as Gtk.Label).max_width_chars = 30;
         check.set_data("output_id", id);
         check.toggled.connect(on_output_selected);
         output_box.pack_start(check, false, false, 0);
@@ -357,7 +360,10 @@ public class SoundWidget : Gtk.Box
         }
         var device = this.mixer.lookup_input_id(id);
 
-        var check = new Gtk.RadioButton.with_label_from_widget(this.input_leader, device.description);
+        var card = device.card as Gvc.MixerCard;
+        var check = new Gtk.RadioButton.with_label_from_widget(this.input_leader, "%s - %s".printf(device.description, card.name));
+        (check.get_child() as Gtk.Label).set_ellipsize(Pango.EllipsizeMode.END);
+        (check.get_child() as Gtk.Label).max_width_chars = 30;
         check.set_data("input_id", id);
         check.toggled.connect(on_input_selected);
         input_box.pack_start(check, false, false, 0);

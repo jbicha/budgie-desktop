@@ -1,7 +1,7 @@
 budgie-desktop
 ==========
 
-The Budgie Desktop is the flagship desktop of Solus OS.
+The Budgie Desktop is the flagship desktop of the Solus Operating System.
 
 License
 -------
@@ -41,16 +41,18 @@ Operating System, are given:
     - upower-glib >= 0.9.20
     - polkit-agent-1 >= 0.110
     - polkit-gobject-1 >= 0.110
+    - gnome-bluetooth-1.0 >= 3.16.0
 
 And:
 
     - vala >= 0.28
+    - gtk-doc (For documentation building from git only)
 
 To install these on Solus:
 
 ```bash
 
-    sudo eopkg it glib2-devel libgtk-3-devel libpeas-devel gobject-introspection-devel util-linux-devel pulseaudio-devel libgnome-menus-devel libgnome-desktop-devel mutter-devel polkit-devel libwnck-devel upower-devel vala
+    sudo eopkg it glib2-devel libgtk-3-devel gtk-doc libpeas-devel gobject-introspection-devel util-linux-devel pulseaudio-devel libgnome-menus-devel libgnome-desktop-devel gnome-bluetooth-devel mutter-devel polkit-devel libwnck-devel upower-devel vala
     sudo eopkg it -c system.devel
 ```
 

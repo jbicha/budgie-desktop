@@ -2,9 +2,12 @@
 <!-- Generated with glade 3.18.3 -->
 <interface>
   <requires lib="gtk+" version="3.12"/>
-  <template class="BudgieAppearanceSettings" parent="GtkBox">
+  <template class="BudgieFontSettings" parent="GtkBox">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
+    <property name="margin_top">8</property>
+    <property name="margin_bottom">6</property>
+    <property name="hexpand">False</property>
     <property name="orientation">vertical</property>
     <child>
       <object class="GtkEventBox" id="eventbox1">
@@ -20,7 +23,7 @@
             <property name="margin_left">10</property>
             <property name="margin_top">4</property>
             <property name="margin_bottom">5</property>
-            <property name="label" translatable="yes">Appearance</property>
+            <property name="label" translatable="yes">Fonts</property>
           </object>
         </child>
         <style>
@@ -45,113 +48,30 @@
             <property name="margin_right">6</property>
             <property name="margin_top">6</property>
             <property name="margin_bottom">6</property>
+            <property name="hexpand">False</property>
             <property name="row_spacing">6</property>
-            <property name="column_spacing">6</property>
-            <child>
-              <object class="GtkLabel" id="label3">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="tooltip_text" translatable="yes">Use the dark theme</property>
-                <property name="halign">start</property>
-                <property name="valign">start</property>
-                <property name="label" translatable="yes">Dark theme</property>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkSwitch" id="switch_dark">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="halign">end</property>
-                <property name="valign">center</property>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="label5">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="tooltip_text" translatable="yes">Select a GTK+ theme</property>
-                <property name="halign">start</property>
-                <property name="valign">center</property>
-                <property name="label" translatable="yes">Widget Theme</property>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="label7">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="tooltip_text" translatable="yes">Select an icon theme</property>
-                <property name="halign">start</property>
-                <property name="valign">center</property>
-                <property name="margin_top">6</property>
-                <property name="label" translatable="yes">Icon Theme</property>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">3</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkComboBox" id="combobox_gtk">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">end</property>
-                <property name="valign">center</property>
-                <property name="hexpand">True</property>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkComboBox" id="combobox_icon">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">end</property>
-                <property name="valign">center</property>
-                <property name="hexpand">True</property>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">3</property>
-              </packing>
-            </child>
+            <property name="column_spacing">12</property>
             <child>
               <object class="GtkLabel" id="label1">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="tooltip_text" translatable="yes">Override defaults</property>
                 <property name="halign">start</property>
-                <property name="valign">center</property>
-                <property name="margin_right">2</property>
-                <property name="label" translatable="yes">Built-in theme</property>
+                <property name="label" translatable="yes">Window Titles</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">1</property>
+                <property name="top_attach">0</property>
               </packing>
             </child>
             <child>
-              <object class="GtkSwitch" id="switch_builtin">
+              <object class="GtkLabel" id="label3">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="halign">end</property>
-                <property name="valign">center</property>
+                <property name="can_focus">False</property>
+                <property name="halign">start</property>
+                <property name="label" translatable="yes">Interface</property>
               </object>
               <packing>
-                <property name="left_attach">1</property>
+                <property name="left_attach">0</property>
                 <property name="top_attach">1</property>
               </packing>
             </child>
@@ -159,28 +79,88 @@
               <object class="GtkLabel" id="label4">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="tooltip_text" translatable="yes">Select an icon theme</property>
                 <property name="halign">start</property>
-                <property name="valign">center</property>
-                <property name="margin_top">6</property>
-                <property name="label" translatable="yes">Cursor Theme</property>
+                <property name="label" translatable="yes">Documents</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">4</property>
+                <property name="top_attach">2</property>
               </packing>
             </child>
             <child>
-              <object class="GtkComboBox" id="combobox_cursor">
+              <object class="GtkLabel" id="label5">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="halign">start</property>
+                <property name="label" translatable="yes">Monospace</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkFontButton" id="fontbutton_title">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
                 <property name="halign">end</property>
-                <property name="valign">center</property>
                 <property name="hexpand">True</property>
+                <property name="font">Sans 12</property>
+                <property name="preview_text"/>
+                <property name="show_size">False</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">4</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkFontButton" id="fontbutton_interface">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="halign">end</property>
+                <property name="hexpand">True</property>
+                <property name="font">Sans 12</property>
+                <property name="preview_text"/>
+                <property name="show_size">False</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkFontButton" id="fontbutton_document">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="halign">end</property>
+                <property name="hexpand">True</property>
+                <property name="font">Sans 12</property>
+                <property name="preview_text"/>
+                <property name="show_size">False</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkFontButton" id="fontbutton_monospace">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="halign">end</property>
+                <property name="hexpand">True</property>
+                <property name="font">Sans 12</property>
+                <property name="preview_text"/>
+                <property name="show_size">False</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">3</property>
               </packing>
             </child>
           </object>
@@ -204,9 +184,10 @@
   </template>
   <object class="GtkSizeGroup" id="sizegroup1">
     <widgets>
-      <widget name="combobox_gtk"/>
-      <widget name="combobox_icon"/>
-      <widget name="combobox_cursor"/>
+      <widget name="fontbutton_title"/>
+      <widget name="fontbutton_interface"/>
+      <widget name="fontbutton_document"/>
+      <widget name="fontbutton_monospace"/>
     </widgets>
   </object>
 </interface>

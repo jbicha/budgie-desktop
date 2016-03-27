@@ -9,16 +9,18 @@ $asset_suffix: if($variant == 'default', '', '-hc');
 
 // Used to reset all style properties set by the gtk theme
 %reset_style,
-GtkScrolledWindow,
-GtkPopover GtkListBox,
-GtkPopover GtkListBoxRow,
-GtkPopover .scrollbar .trough {
+scrolledwindow,
+popover list,
+popover row,
+popover scrollbar trough {
     background: none;
     border: none;
     box-shadow: none;
     text-shadow: none;
-    icon-shadow: none;
+    -gtk-icon-shadow: none;
     opacity: 1;
+    min-width: 0;
+    min-height: 0;
 }
 
 // Container for both the "panel" area and the shadow. Wise to keep
@@ -33,43 +35,56 @@ GtkPopover .scrollbar .trough {
         outline-style: dashed;
         outline-offset: -3px;
         outline-width: 1px;
-        outline-radius: 2px;
+        -gtk-outline-radius: 2px;
+        margin: 0;
 
         @extend %reset_style;
     }
 
     .dim-label { opacity: 0.55; }
-    .label:insensitive { color: transparentize($fg_color, 0.65); }
-    .separator { color: rgba(0,0,0,0.25); }
-    .cell { color: $fg_color; }
-    GtkLabel, GtkImage { color: inherit; }
+    label:disabled { color: transparentize($fg_color, 0.65); }
+    label, image { color: inherit; }
+
+    separator {
+        background-color: rgba(0,0,0,0.25);
+        min-width: 1px;
+        min-height: 1px;
+    }
 
     // used to indicate unread notifications
     .alert { color: $alert_color; }
 
     // Entries
-    .entry {
+    entry {
         padding: 4px 8px;
         border: $border_width solid;
         border-radius: $roundness;
+        caret-color: $fg_color;
 
         @include entry(normal);
+
+        image {
+            color: $fg_color;
+
+            &.left { padding-left: 0; padding-right: 3px; }
+            &.right { padding-right: 0; padding-left: 3px; }
+        }
 
         &:focus {
             @include entry(focus);
         }
-        &:insensitive {
+        &:disabled {
             @include entry(insensitive);
         }
-        &:selected,
-        &:selected:focus {
+        selection,
+        selection:focus {
             color: $selected_fg_color;
             background-color: $selected_bg_color;
         }
     }
 
     // Buttons
-    .button {
+    button {
         background-clip: padding-box;
         padding: 4px 8px;
         border: $border_width solid;
@@ -77,14 +92,16 @@ GtkPopover .scrollbar .trough {
 
         @include button(normal);
 
+        separator { margin: 4px 1px; }
+
         &.flat:not(:hover):not(:active):not(:checked) {
-            &, &:insensitive {
+            &, &:disabled {
                 @include button(flat);
             }
         }
         &:hover { @include button(hover); }
         &:active, &:checked { @include button(active); }
-        &:insensitive {
+        &:disabled {
             @include button(insensitive);
             &:active, &:checked {
                 @include button(insensitive-active);
@@ -98,7 +115,7 @@ GtkPopover .scrollbar .trough {
                 @include button(normal, $b_color, $selected_fg_color);
                 &:hover { @include button(hover, $b_color, $selected_fg_color); }
                 &:active, &:checked { @include button(active, $active_bg:darken($b_color, 10%)); }
-                &:insensitive { opacity: 0.5; }
+                &:disabled { opacity: 0.5; }
             }
         }
 
@@ -106,13 +123,15 @@ GtkPopover .scrollbar .trough {
         &.image-button { padding: 4px; }
     }
 
+    stackswitcher button.text-button { min-width: 70px; }
+
     // Linked Widgets
     .linked {
-        > .entry,
-        > .button { @extend %linked; }
+        > entry,
+        > button { @extend %linked; }
 
         // linked square buttons look weird
-        .button.image-button { padding: 4px 7px; }
+        button.image-button { padding: 4px 7px; }
     }
 
     %linked_middle {
@@ -137,56 +156,45 @@ GtkPopover .scrollbar .trough {
     }
 
     // ComboBoxes
-    GtkComboBox.combobox-entry {
-        .entry {
-            &:dir(ltr) {
-                border-top-right-radius: 0;
-                border-bottom-right-radius: 0;
-            }
-            &:dir(rtl) {
-                border-top-left-radius: 0;
-                border-bottom-left-radius: 0;
-            }
+    combobox {
+        arrow {
+          -gtk-icon-source: -gtk-icontheme('pan-down-symbolic');
+          min-height: 16px;
+          min-width: 16px;
         }
-        .button {
-            &:dir(ltr) {
-                border-top-left-radius: 0;
-                border-bottom-left-radius: 0;
-                border-left-style: none;
-            }
-            &:dir(rtl) {
-                border-top-right-radius: 0;
-                border-bottom-right-radius: 0;
-                border-right-style: none;
+        &.linked {
+            button:nth-child(2) {
+                &:dir(ltr) { @extend %linked:last-child; }
+                &:dir(rtl) { @extend %linked:first-child; }
             }
         }
     }
 
     // Spinbuttons
-    .spinbutton {
-        border-radius: $roundness;
+    spinbutton {
+        color: $fg_color;
+        caret-color: currentColor;
 
-        .button {
-            border-color: transparentize($button_border, 0.3);
-            border-style: none none none solid;
-            border-radius: 0;
-
-            &:dir(rtl) { border-style: none solid none none; }
+        &:not(.vertical) {
+            button, entry { @extend %linked; }
         }
+
+        &:dir(ltr) entry,
+        &:dir(rtl) button.up { border-radius: $roundness 0 0 $roundness; }
     }
 
     // Progressbars
-    GtkProgressBar {
+    progressbar {
         padding: 0;
         font-size: smaller;
         color: transparentize($fg_color, 0.3);
 
-        &.progressbar {
+        progress {
             background-color: $selected_bg_color;
             border: none;
             border-radius: 3px;
         }
-        &.trough {
+        trough {
             border: none;
             border-radius: 3px;
             background-color: $trough_bg;
@@ -194,66 +202,89 @@ GtkPopover .scrollbar .trough {
     }
 
     // Scale
-    .scale {
-        -GtkScale-slider-length: 16;
-        -GtkRange-slider-width: 16;
-        -GtkRange-trough-border: 0;
-        outline-offset: -1px;
-        outline-radius: 2px;
-        outline-color: transparentize($fg_color, 0.7);
+    scale {
+        min-height: 10px;
+        min-width: 10px;
+        padding: 5px;
 
-        color: gtkalpha(currentColor, 0.7);
+        value, marks { color: gtkalpha(currentColor, 0.7); }
 
-        &:insensitive { opacity: 0.4; }
+        &:disabled { opacity: 0.4; }
 
-        &.slider {
-            border-radius: 50%;
-
-            @if $variant == 'default' {
-                background-image: -gtk-scaled(url("assets/scale-slider.png"),url("assets/scale-slider@2.png"));
+        // slider sizing
+        @if $variant == 'default' {
+            slider {
+                min-width: 6px;
+                min-height: 6px;
+                margin: 0;
             }
-            @else {
-                background-color: $selected_bg_color;
+            &:hover slider {
+                min-width: 14px;
+                min-height: 14px;
+                margin: -4px;
             }
-
-            &:hover { background: $selected_bg_color; }
         }
-        &.trough {
+        @else {
+            slider {
+                min-width: 16px;
+                min-height: 16px;
+                margin: -6px;
+            }
+        }
+
+        slider {
+            border-radius: 50%;
+            background-color: $selected_bg_color;
+        }
+        trough {
+            outline-offset: 2px;
+            -gtk-outline-radius: 2px;
             margin: 5px;
             background-color: $trough_bg;
             border-radius: 2.5px;
 
-            &.highlight { background-color: $selected_bg_color; }
+            highlight {
+                border-radius: 2.5px;
+                background-color: $selected_bg_color;
+            }
         }
     }
 
     // Check and Radio Items
     @each $w,$a in ('check', 'checkbox'),
                    ('radio','radio') {
-      .#{$w} {
+      #{$w} {
         color: $fg_color;
-        -gtk-icon-source: if($variant == 'default', -gtk-scaled(url("assets/#{$a}.png"),url("assets/#{$a}@2.png")),
+        -gtk-icon-source: if($variant == 'default', -gtk-scaled(url("../assets/#{$a}.png"),url("../assets/#{$a}@2.png")),
                                                     -gtk-icontheme('#{$a}-symbolic'));
 
         &:checked, &:active {
-            -gtk-icon-source: if($variant == 'default', -gtk-scaled(url("assets/#{$a}-active.png"),url("assets/#{$a}-active@2.png")),
+            -gtk-icon-source: if($variant == 'default', -gtk-scaled(url("../assets/#{$a}-active.png"),url("../assets/#{$a}-active@2.png")),
                                                         -gtk-icontheme('#{$a}-checked-symbolic'));
         }
-        &:insensitive { color: transparentize($fg_color, 0.65); }
-        &:inconsistent { -gtk-icon-source: -gtk-icontheme('#{$a}-mixed-symbolic'); }
+        &:disabled { color: transparentize($fg_color, 0.65); }
+        &:indeterminate { -gtk-icon-source: -gtk-icontheme('#{$a}-mixed-symbolic'); }
       }
+    }
+    radiobutton radio,
+    checkbutton check {
+      min-width: 16px;
+      min-height: 16px;
+      margin: 0 2px;
+      &:only-child { margin: 0; }
     }
 
     // Switches
-    GtkSwitch {
+    switch {
         font: 1;
-        -GtkSwitch-slider-width: 45;
-        -GtkSwitch-slider-height: 19;
         outline-color: transparent;
 
-        &:insensitive { opacity: 0.4; }
+        slider {
+            min-width: 45px;
+            min-height: 19px;
+        }
 
-        &.trough, &.slider {
+        &, slider {
             color: transparent;
             background-size: 45px 19px;
             background-repeat: no-repeat;
@@ -261,68 +292,79 @@ GtkPopover .scrollbar .trough {
 
             &:dir(rtl) { background-position: left center; }
         }
-        &.trough {
-            background-image: -gtk-scaled(url("assets/switch#{$asset_suffix}.png"),url("assets/switch#{$asset_suffix}@2.png"));
 
-            &:active { background-image: -gtk-scaled(url("assets/switch-active#{$asset_suffix}.png"),url("assets/switch-active#{$asset_suffix}@2.png")); }
-        }
+        background-image: -gtk-scaled(url("../assets/switch#{$asset_suffix}.png"),url("../assets/switch#{$asset_suffix}@2.png"));
+
+        &:active { background-image: -gtk-scaled(url("../assets/switch-active#{$asset_suffix}.png"),url("../assets/switch-active#{$asset_suffix}@2.png")); }
+        &:disabled { opacity: 0.4; }
     }
 
     // Scrollbars
-    .scrollbar {
-        -GtkRange-slider-width: 13;
-        -GtkRange-trough-border: 0;
+    scrollbar {
         -GtkScrollbar-has-backward-stepper: false;
         -GtkScrollbar-has-forward-stepper: false;
-        -GtkScrollbar-min-slider-length: 42;
-        -GtkRange-stepper-spacing: 0;
-        -GtkRange-trough-under-steppers: 1;
 
         $_slider_margin: 3px;
         $_slider_fine_tune_margin: 4px;
 
-        .button { border: none; }
+        button { border: none; }
 
         &.overlay-indicator {
             &:not(.dragging):not(.hovering) {
                 opacity: if($variant == 'default', 0.4, 1);
 
-                -GtkRange-slider-width: 6px;
-
-                .slider {
-                    margin: $_slider_margin - 1px 0;
+                slider {
+                    margin: 0;
                     background-color: $scrollbar_bg;
                     border: 1px solid $scrollbar_border;
                     background-clip: padding-box;
                 }
-                .trough {
+                trough {
                     border-style: none;
                     background-color: transparent;
+                }
+                // sizing
+                &.vertical slider {
+                    min-width: 4px;
+                    margin-top: $_slider_margin - 1px;
+                    margin-bottom: $_slider_margin - 1px;
                 }
             }
             &.dragging,
             &.hovering { opacity: 0.99; }
         }
 
-        .slider {
+        slider {
             border-radius: 100px;
             margin: $_slider_margin;
             background-color: transparentize($scrollbar_bg, if($variant == 'default', 0.5, 0));
 
             &:hover { background-color: transparentize($scrollbar_bg, if($variant == 'default', 0.3, 0)); }
 
-            &:prelight:active { background-color: $selected_bg_color;}
+            &:hover:active { background-color: $selected_bg_color;}
 
-            &:insensitive { background-color: transparent; }
+            &:disabled { background-color: transparent; }
         }
-        &.fine-tune .slider { margin: $_slider_fine_tune_margin; }
 
-        .trough { background-color: if($variant == 'default', transparentize(black, 0.6), $trough_bg); }
+        trough { background-color: if($variant == 'default', transparentize(black, 0.6), $trough_bg); }
+
+        // sizing
+        &.vertical {
+            &.fine-tune slider {
+                min-width: 4px;
+                margin: $_slider_fine_tune_margin;
+            }
+            slider {
+                min-height: 42px;
+                min-width: 6px;
+                margin: $_slider_margin;
+            }
+        }
     }
 
     // Lists
-    .list { color: $fg_color; }
-    .list-row.activatable {
+    list { color: $fg_color; }
+    row.activatable {
         padding: 3px;
         color: $fg_color;
 
@@ -334,55 +376,66 @@ GtkPopover .scrollbar .trough {
 
             &:active { color: $selected_fg_color; }
             &:hover { background-color: mix(black, $selected_bg_color, 10%); }
-            &:insensitive {
+            &:disabled {
                 color: transparentize($selected_fg_color, 0.3);
                 background-color: transparentize($selected_bg_color, 0.3);
-                .label { color: inherit; }
+                label { color: inherit; }
             }
         }
     }
     @at-root %menu {
-        .menu {
-            .cell { color: inherit; }
-
+        .menu, menu {
             margin: 4px;
             padding: 0;
             border-radius: 0;
             background-color: $raven_bg;
 
-            .menuitem {
+            menuitem {
                 padding: 5px;
                 color: $fg_color;
+                border: solid transparent;
+                border-width: 1px 0 1px 0;
                 &:hover {
                     color: $selected_fg_color;
                     background-color: if($variant == 'hc',$selected_bg_color, transparentize(white, 0.95));
                     border: solid if($variant == 'hc', $selected_bg_color, transparentize(white, 0.93));
                     border-width: 1px 0 1px 0;
               }
-              &:insensitive { color: transparentize($fg_color, 0.65); }
-              &.separator { color: transparentize($raven_bg, 1); }
+              &:disabled { color: transparentize($fg_color, 0.65); }
+              separator { background-color: transparentize($raven_bg, 1); }
             }
-            &.button {
+            arrow {
                 border: none;
+                min-width: 16px;
+                min-height: 16px;
+
+                &.top {
+                    -gtk-icon-source: -gtk-icontheme('pan-up-symbolic');
+                    border-bottom: 1px solid mix($fg_color, $raven_bg, 10%);
+                }
+                &.bottom {
+                    -gtk-icon-source: -gtk-icontheme('pan-down-symbolic');
+                    border-top: 1px solid mix($fg_color, $raven_bg, 10%);
+                }
                 &:hover { background-color: $selected_bg_color; }
-                &:insensitive {
+                &:disabled {
                     color: transparentize($fg_color, 0.65);
                     background-color: transparent;
                 }
             }
         }
-        .window-frame.csd.popup {
+        .csd.popup decoration {
             box-shadow: 0 3px 6px transparentize(black, 0.55),
                         0 0 0 1px transparentize(black, 0.55);
         }
     }
 
     // Calendar
-    GtkCalendar.raven-calendar {
+    calendar.raven-calendar {
         padding: 3px;
         color: $fg_color;
 
-        &:inconsistent { color: gtkalpha(currentColor,0.3); }
+        &:indeterminate { color: gtkalpha(currentColor,0.3); }
 
         @if $variant=='default' {
             &:selected { color: $selected_bg_color; }
@@ -412,16 +465,16 @@ GtkPopover .scrollbar .trough {
 
 // Budgie Menu
 .budgie-menu {
-    GtkSearchEntry.entry:not(:selected) {
+    entry.search {
         border: none;
         box-shadow: none;
         background: none;
         font-size: 120%;
 
-        &.image { padding-left: 0px; padding-right: 6px; }
+        image { padding-left: 0px; padding-right: 6px; }
     }
-    .list-row.activatable:selected,
-    .list-row.activatable:selected .button { color: inherit; }
+    row.activatable:selected,
+    row.activatable:selected button { color: inherit; }
 }
 
 // Panel
@@ -436,16 +489,17 @@ GtkPopover .scrollbar .trough {
             background-color: rgba(0,0,0,0.3);
             border-radius: 2px;
 
-            .separator { color: transparentize($fg_color, 0.85) }
+            separator { background-color: transparentize($fg_color, 0.85) }
         }
     }
 }
 
 // Tasklist
-.budgie-panel WnckTasklist .button,
-.budgie-panel WnckTasklist .button:backdrop {
+.budgie-panel #tasklist-button,
+.budgie-panel #tasklist-button:backdrop {
 
     border-radius: 0;
+    outline-color: transparent;
 
     @if $variant == 'default' {
         &:not(:hover):not(:active):not(:checked) { color: gtkalpha(currentColor, 0.5); }
@@ -455,21 +509,26 @@ GtkPopover .scrollbar .trough {
 
         @extend %underscores;
     }
+
+    &:drop(active) { box-shadow: inset 0 0 0 1px $selected_bg_color; }
 }
 
 // Icon Tasklist
 .budgie-panel {
 
-    .launcher {
-        transition: all 100ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        padding-left: 2px;
-        padding-right: 2px;
-        border-color: transparentize($panel_bg,1); // fixes the transition
+    button.flat.launcher {
+        @extend %reset_style;
 
-        &:hover { -gtk-image-effect: highlight; }
+        outline-color: transparent;
+        transition: all 100ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        padding: 1px 2px;
+        border-color: transparentize($panel_bg,1); // fixes the transition
+        border-radius: 0;
+
+        &:hover { -gtk-icon-effect: highlight; }
     }
-    .unpinned .launcher,
-    .pinned .launcher.running { @extend %underscores; }
+    .unpinned button.flat.launcher,
+    .pinned button.flat.launcher.running { @extend %underscores; }
 }
 
 %underscores {
@@ -482,8 +541,8 @@ GtkPopover .scrollbar .trough {
             border-#{$pos}: 2px solid transparentize($panel_bg,1);
 
             @at-root {
-                .#{$pos} .budgie-panel .unpinned .launcher,
-                .#{$pos} .budgie-panel .pinned .launcher.running { border-#{$pos}: 2px solid transparentize($selected_bg_color, 0.5); }
+                .#{$pos} .budgie-panel .unpinned button.flat.launcher,
+                .#{$pos} .budgie-panel .pinned button.flat.launcher.running { border-#{$pos}: 2px solid transparentize($selected_bg_color, 0.5); }
             }
             &:hover {
                 border-#{$b_pos}: 2px solid transparentize(black, 0.9);
@@ -506,8 +565,11 @@ GtkPopover .scrollbar .trough {
     .#{$pos} .raven-frame {
         padding: 0;
         background: none;
-        border: none;
-        border-#{$b_pos}: $border_width solid $raven_border;
+
+        border {
+            border: none;
+            border-#{$b_pos}: $border_width solid $raven_border;
+        }
     }
 
     // Shadows
@@ -528,6 +590,8 @@ GtkPopover .scrollbar .trough {
     transition: 170ms ease-out;
 
     .raven-header {
+        min-height: 32px;
+
         color: $fg_color;
         border: solid $raven_expander_border;
         border-width: 1px 0;
@@ -546,7 +610,7 @@ GtkPopover .scrollbar .trough {
 
         &.middle { border-bottom-style: none; }  // applet background between two headers
     }
-    .powerstrip .button {
+    .powerstrip button {
         padding: 10px;
     }
     .option-subtitle {
@@ -561,7 +625,7 @@ GtkPopover .scrollbar .trough {
     border: solid $mpris_overlay_border;
     border-width: 1px 0;
 
-    .button.image-button { padding: 8px; }
+    button.image-button { padding: 8px; }
 }
 
 // Notifications
@@ -592,9 +656,18 @@ GtkPopover .scrollbar .trough {
 
 // Session Dialog
 .budgie-session-dialog {
-    &.background { @extend .drop-shadow; }
+    color: $fg_color;
+    background-color: $panel_bg;
 
-    .linked.horizontal > .button {
+    @extend %widgets;
+
+    decoration {
+      border-radius: 1px;
+      box-shadow: 0 2px 4px 0 $panel_shadow, 0 0 0 1px $panel_border;
+    }
+
+    .linked.horizontal > button {
+        min-height: 20px;
         border-bottom: none;
         border-radius: 0;
         &:first-child { border-left: none; border-radius: 0; }

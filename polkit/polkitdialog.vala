@@ -311,9 +311,10 @@ public class Agent : PolkitAgent.Listener
     private Settings? settings;
     private Gtk.CssProvider? css_provider = null;
 
+
     public Agent()
     {
-        this.current_theme_uri = "resource://com/solus-project/budgie/theme/theme.css";
+        this.current_theme_uri = Budgie.form_theme_path("theme.css");
 
         /* Set up dark mode across the desktop */
         settings = new GLib.Settings("com.solus-project.budgie-panel");
@@ -371,7 +372,7 @@ public class Agent : PolkitAgent.Listener
         var gtksettings = Gtk.Settings.get_default();
 
         if (gtksettings.gtk_theme_name == "HighContrast") {
-            set_css_from_uri(this.current_theme_uri == null ? null : "resource://com/solus-project/budgie/theme/theme_hc.css");
+            set_css_from_uri(this.current_theme_uri == null ? null : Budgie.form_theme_path("theme.css"));
         } else {
             /* In future we'll actually support custom themes.. */
             set_css_from_uri(this.current_theme_uri);
@@ -418,7 +419,7 @@ public class Agent : PolkitAgent.Listener
             return;
         }
         if (settings.get_boolean(key)) {
-            this.current_theme_uri = "resource://com/solus-project/budgie/theme.css";
+            this.current_theme_uri = Budgie.form_theme_path("theme.css");
         } else {
             this.current_theme_uri = null;
         }

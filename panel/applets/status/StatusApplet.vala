@@ -29,30 +29,46 @@ public class StatusApplet : Budgie.Applet
 {
 
     protected Gtk.Box widget;
+    protected BluetoothIndicator blue;
     protected SoundIndicator sound;
     protected PowerIndicator power;
-    protected Gtk.Popover popover;
     protected Gtk.EventBox? wrap;
     protected RavenProxy? raven_proxy = null;
+    private Budgie.PopoverManager? manager = null;
 
     public StatusApplet()
     {
         wrap = new Gtk.EventBox();
         add(wrap);
 
-        widget = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 2);
+        widget = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
         wrap.add(widget);
 
         power = new PowerIndicator();
         widget.pack_start(power, false, false, 0);
 
         sound = new SoundIndicator();
-        widget.pack_start(sound, false, false, 0);
+        widget.pack_start(sound, false, false, 2);
+
+        blue = new BluetoothIndicator();
+        widget.pack_start(blue, false, false, 2);
 
         wrap.button_release_event.connect(on_button_release);
 
         var power = new Gtk.Image.from_icon_name("system-shutdown-symbolic", Gtk.IconSize.MENU);
-        widget.pack_start(power, false, false, 0);
+        widget.pack_start(power, false, false, 2);
+
+        blue.ebox.button_press_event.connect((e)=> {
+            if (e.button != 3) {
+                return Gdk.EVENT_PROPAGATE;
+            }
+            if (blue.popover.get_visible()) {
+                blue.popover.hide();
+            } else {
+                this.manager.show_popover(blue.ebox);
+            }
+            return Gdk.EVENT_STOP;
+        });
 
         show_all();
 
@@ -72,6 +88,11 @@ public class StatusApplet : Budgie.Applet
         return Gdk.EVENT_STOP;
     }
 
+    public override void update_popovers(Budgie.PopoverManager? manager)
+    {
+        this.manager = manager;
+        manager.register_popover(blue.ebox, blue.popover);
+    }
 
     /* Hold onto our Raven proxy ref */
     void on_raven_get(GLib.Object? o, GLib.AsyncResult? res)

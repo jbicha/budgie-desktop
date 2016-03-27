@@ -8,11 +8,13 @@ raven/sound.vala
 [type: gettext/glade]raven/ui/applets.ui
 [type: gettext/glade]raven/ui/appearance.ui
 [type: gettext/glade]raven/ui/panel.ui
+[type: gettext/glade]raven/ui/background.ui
+[type: gettext/glade]raven/ui/fonts.ui
 
 session/budgie-desktop.desktop.in.in
 [type: gettext/keys]session/budgie-desktop.session.in.in
 
-[type: gettext/keys]data/endsession.ui
+[type: gettext/glade]data/endsession.ui
 
 
 panel/applets/budgie-menu/settings.ui
@@ -22,7 +24,7 @@ panel/applets/budgie-menu/BudgieMenuWindow.vala
 panel/applets/lock-keys/LockKeysApplet.vala
 panel/applets/notifications/NotificationsApplet.vala
 panel/applets/show-desktop/ShowDesktopApplet.vala
-
+panel/applets/status/BluetoothIndicator.vala
 
 wm/windowmenu.vala
 wm/wm.vala
