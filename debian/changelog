@@ -1,3 +1,9 @@
+budgie-desktop (10.2.5-1) xenial; urgency=medium
+
+  * change dependency to libgnome-bluetooth-dev
+
+ -- fossfreedom <foss.freedom@gmail.com>  Mon, 28 Mar 2016 00:16:40 +0100
+
 budgie-desktop (10.2.5-0) xenial; urgency=medium
 
   * new upstream release
