@@ -1,0 +1,17 @@
+Index: budgie-desktop-10.2.8/panel/applets/budgie-menu/BudgieMenuWindow.vala
+===================================================================
+--- budgie-desktop-10.2.8.orig/panel/applets/budgie-menu/BudgieMenuWindow.vala	2016-10-19 03:36:11.000000000 +0100
++++ budgie-desktop-10.2.8/panel/applets/budgie-menu/BudgieMenuWindow.vala	2016-10-22 10:28:29.174016000 +0100
+@@ -182,10 +182,10 @@
+                 return;
+             }
+             /* Think of deferred routines.. */
+-            Idle.add(()=> {
++            /*Idle.add(()=> {
+                 tree.changed.connect(refresh_tree);
+                 return false;
+-            });
++            });*/
+         }
+         if (tree_root == null) {
+             root = tree.get_root_directory();

@@ -1,6 +1,8 @@
 #!/usr/bin/make -f
 
-export DEB_BUILD_MAINT_OPTIONS = hardening=+relro,+bindnow
+# for xenial we remove the hardening options since these cause
+# random crashes
+export DEB_BUILD_MAINT_OPTIONS = hardening=-relro,-bindnow
 
 # we use make maintainer-clean to remove all generated C files
 # and then force another autoreconf/configure to regenerate these
