@@ -1,3 +1,11 @@
+budgie-desktop (10.2.8-0ubuntu3~xenial) xenial; urgency=medium
+
+  * Bug-fix release:
+    - patches to fix panel and session crashes
+      add patch 0003-applets-budgie-menu-Stop-Vala-unreffing-the-Settings.patch
+
+ -- David Mohammed <fossfreedom@ubuntu.com>  Sun, 30 Oct 2016 22:50:38 +0000
+
 budgie-desktop (10.2.8-0ubuntu1~xenialubuntu2) xenial; urgency=medium
 
   * New upstream release
