@@ -29,6 +29,8 @@ binary binary-arch:
 	find debian -name \*.html -exec chmod 644 {} \;
 	# correct permissions on folders
 	find ./debian -type d | xargs chmod 755
+	# remove unrecognised and non ISO639 locale
+	find debian -type d -name "zh-Hant" -print0 | xargs -r0 -- rm -r
 	# install override but budgie has to take precedence over
 	# gnome-shell defaults
 	dh_installgsettings --priority=15

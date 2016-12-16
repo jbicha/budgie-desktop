@@ -1,10 +1,15 @@
-budgie-desktop (10.2.8-0ubuntu3~xenial) xenial; urgency=medium
+budgie-desktop (10.2.9-0~xenial) xenial; urgency=medium
 
-  * Bug-fix release:
-    - patches to fix panel and session crashes
-      add patch 0003-applets-budgie-menu-Stop-Vala-unreffing-the-Settings.patch
+  * New upstream release
+    - maintenance release - changelog as per release tag
+  * Packaging changes:
+    - Drop all now obsolete previous patches names 000*
+    - add debian/ubuntu specific patch to stop panel crashes
+      stop_menu_refresh.diff
+    - refresh nm-applet.diff patch due to source filelayout change
+    - add to rules to delete non ISO639 zh-Hant locale
 
- -- David Mohammed <fossfreedom@ubuntu.com>  Sun, 30 Oct 2016 22:50:38 +0000
+ -- David Mohammed <fossfreedom@ubuntu.com>  Fri, 16 Dec 2016 20:00:14 +0000
 
 budgie-desktop (10.2.8-0ubuntu1~xenialubuntu2) xenial; urgency=medium
 
