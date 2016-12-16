@@ -8,6 +8,7 @@ budgie-desktop (10.2.9-0~xenial) xenial; urgency=medium
       stop_menu_refresh.diff
     - refresh nm-applet.diff patch due to source filelayout change
     - add to rules to delete non ISO639 zh-Hant locale
+    - update debian/copyright due to source filelayout change
 
  -- David Mohammed <fossfreedom@ubuntu.com>  Fri, 16 Dec 2016 20:00:14 +0000
 
