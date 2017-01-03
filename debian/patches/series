@@ -1,2 +1,1 @@
-nm-applet.diff
-stop_menu_refresh.diff
+show_nm-applet_in_tray.patch
