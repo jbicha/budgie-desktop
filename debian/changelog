@@ -1,20 +1,11 @@
-budgie-desktop (10.2.9-2ubuntu1) xenial; urgency=medium
+budgie-desktop (10.2.9-1~xenial) xenial; urgency=medium
 
   * Bug-fix release (LP: #1653739)
     - ubuntu patch to ensure nm-applet displays in the X11 system tray
+  * cleanup old autostart file
 
  -- David Mohammed <fossfreedom@ubuntu.com>  Tue, 03 Jan 2017 19:48:38 +0000
 
-budgie-desktop (10.2.9-2) unstable; urgency=medium
-
-  * Bug-fix release
-    - drop the last two remaining patches since additional
-      testing with the new versions of gnome-menus and
-      network-manager now in Stretch makes these patches unnecessary
-      (Closes: #849595)
-
- -- David Mohammed <fossfreedom@ubuntu.com>  Mon, 02 Jan 2017 10:50:32 +0000
- 
  budgie-desktop (10.2.9-0~xenial) xenial; urgency=medium
 
   * New upstream release
