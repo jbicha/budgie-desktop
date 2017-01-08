@@ -6,7 +6,7 @@ budgie-desktop (10.2.9-1~xenial) xenial; urgency=medium
 
  -- David Mohammed <fossfreedom@ubuntu.com>  Tue, 03 Jan 2017 19:48:38 +0000
 
- budgie-desktop (10.2.9-0~xenial) xenial; urgency=medium
+budgie-desktop (10.2.9-0~xenial) xenial; urgency=medium
 
   * New upstream release
     - maintenance release - changelog as per release tag
